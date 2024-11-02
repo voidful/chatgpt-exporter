@@ -3,7 +3,7 @@
 // @name:zh-CN         ChatGPT Exporter
 // @name:zh-TW         ChatGPT Exporter
 // @namespace          pionxzh
-// @version            2.25.0
+// @version            2.1.2
 // @author             pionxzh
 // @description        Easily export the whole ChatGPT conversation history for further analysis or sharing.
 // @description:zh-CN  轻松导出 ChatGPT 聊天记录，以便进一步分析或分享。
@@ -1142,12 +1142,12 @@ html {
   }
   async function replaceImageAssets(conversation) {
     const isMultiModalInputImage = (part) => {
-      return typeof part !== "string" && part.asset_pointer.startsWith("file-service://");
+      return typeof part === "object" && part !== null && "asset_pointer" in part && typeof part.asset_pointer === "string" && part.asset_pointer.startsWith("file-service://");
     };
     const imageAssets = Object.values(conversation.mapping).flatMap((node2) => {
       if (!node2.message) return [];
       if (node2.message.content.content_type !== "multimodal_text") return [];
-      return node2.message.content.parts.filter(isMultiModalInputImage);
+      return (Array.isArray(node2.message.content.parts) ? node2.message.content.parts : []).filter(isMultiModalInputImage);
     });
     const executionOutputs = Object.values(conversation.mapping).flatMap((node2) => {
       var _a, _b;
